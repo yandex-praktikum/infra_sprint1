@@ -12,7 +12,7 @@ def test_infra_files_exist(infra_dir_info, expected_infra_files):
     )
 
 
-def test_deploy_info_file_contens(
+def test_deploy_info_file_content(
         deploy_info_file_info,
         deploy_info_file_content,
         expected_deploy_info_file_content

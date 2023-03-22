@@ -49,13 +49,15 @@ def deploy_info_file_content(deploy_info_file_info):
         file_content = {}
         line_pattern = re.compile(r'[\w_]+: ?[^;]+;')
         for line_num, line in enumerate(f.readlines(), 1):
+            if not line.strip():
+                continue
             assert line_pattern.match(line), (
                 f'Убедитесь, что строка номер {line_num} файла '
                 f'`{relative_path}` соответствует шаблону: '
                 '`<ключ>: <значение>;`. В названии ключа '
                 'допустимы буквы и нижнее подчеркивание.'
             )
-            line = line.rstrip(';')
+            line = line.strip().strip(';')
             key, value = line.split(':', maxsplit=1)
             file_content[key.strip()] = value.strip()
     return file_content

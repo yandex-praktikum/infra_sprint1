@@ -1,0 +1,5 @@
+IP: 132.140.5.6;
+name_taski: https://testtaski.hopto.org;
+name_kittygram: https://testkittygram.hopto.org;
+login: testuser;
+password: slojniyparol;
