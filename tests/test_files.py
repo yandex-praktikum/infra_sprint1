@@ -1,6 +1,3 @@
-import pytest
-
-
 def test_infra_files_exist(infra_dir_info, expected_infra_files):
     path, dir_name = infra_dir_info
     infra_dir_content = {obj.name for obj in path.glob('*') if obj.is_file()}
@@ -30,7 +27,3 @@ def test_deploy_info_file_content(
         f'информации необходимо использовать {key_word_form} '
         f'`{"`, `".join(missing_content.keys())}`.'
     )
-
-
-if __name__ == '__main__':
-    pytest.main()
