@@ -1,0 +1,5 @@
+IP: 127.0.0.1;
+name_taski: https://testtaski.hopto.org/;
+name_kittygram: https://kitty.me;
+login: root;
+password: root;

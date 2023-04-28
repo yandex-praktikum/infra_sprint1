@@ -1,8 +1,9 @@
 import re
 from http import HTTPStatus
 
-import pytest
 import requests
+from requests_html import HTMLSession
+from pyppeteer.errors import TimeoutError
 
 
 def validate_link(
@@ -29,13 +30,13 @@ def validate_link(
     return link
 
 
-def test_link_connection(
-        deploy_info_file_info, deploy_info_file_content, link_key
-        ):
-    _, relative_path = deploy_info_file_info
-    link = validate_link(relative_path, deploy_info_file_content, link_key)
+def _make_safe_request(link, stream=False, js=False) -> requests.Response:
     try:
-        response = requests.get(link)
+        if js:
+            session = HTMLSession()
+            response = session.get(link)
+        else:
+            response = requests.get(link, stream=stream)
     except requests.exceptions.SSLError:
         raise AssertionError(
             f'Убедитесь, что настроили шифрование для `{link}`.'
@@ -49,20 +50,32 @@ def test_link_connection(
         f'Убедитесь, что GET-запрос к `{link}` возвращает ответ со статусом '
         f'{int(expected_status)}.'
     )
+    return response
+
+
+def test_link_connection(
+        deploy_info_file_info, deploy_info_file_content, link_key
+        ):
+    _, relative_path = deploy_info_file_info
+    link = validate_link(relative_path, deploy_info_file_content, link_key)
+    response = _make_safe_request(link, js=True)
+    lookup_attr = response.text
+    try:
+        response.html.render()
+        lookup_attr = response.html.text
+    except TimeoutError:
+        pass
     cats_project_name = 'Kittygram'
+    taski_project_name = 'Taski'
     assert_msg_template = (
         f'Убедитесь, что по ссылке `{link}` доступен проект '
         '`{project_name}`.'
     )
     if link_key == 'name_kittygram':
-        assert cats_project_name in response.text, (
+        assert cats_project_name in lookup_attr, (
             assert_msg_template.format(project_name=cats_project_name)
         )
     else:
-        assert cats_project_name not in response.text, (
-            assert_msg_template.format(project_name='Taski')
+        assert taski_project_name in lookup_attr, (
+            assert_msg_template.format(project_name=taski_project_name)
         )
-
-
-if __name__ == '__main__':
-    pytest.main()
