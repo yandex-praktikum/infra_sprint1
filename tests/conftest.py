@@ -28,7 +28,7 @@ def infra_dir_info():
 
 @pytest.fixture(scope='session')
 def expected_infra_files():
-    return {DEPLOY_INFO_FILE_NAME, 'default', 'gunicorn_kittygram'}
+    return {DEPLOY_INFO_FILE_NAME, 'default', 'gunicorn_kittygram.service'}
 
 
 @pytest.fixture(scope='session')
