@@ -1,0 +1,6 @@
+IP: 130.193.43.109
+name_taski: https://greatjob.hopto.org;
+name_kittygram: https://shareyourkitty.hopto.org;
+login_taski: yc-user;
+login_kittygram: user;
+password: genygenyin;
