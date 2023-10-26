@@ -13,6 +13,7 @@ from .models import Achievement, AchievementCat, Cat
 class Hex2NameColor(serializers.Field):
     def to_representation(self, value):
         return value
+
     def to_internal_value(self, data):
         try:
             data = webcolors.hex_to_name(data)
@@ -45,24 +46,27 @@ class CatSerializer(serializers.ModelSerializer):
     color = Hex2NameColor()
     age = serializers.SerializerMethodField()
     image = Base64ImageField(required=False, allow_null=True)
-    image_url = serializers.SerializerMethodField('get_image_url', read_only=True)
+    image_url = serializers.SerializerMethodField(
+        'get_image_url',
+        read_only=True
+    )
 
     class Meta:
         model = Cat
         fields = (
-            'id', 'name', 'color', 'birth_year', 'achievements', 'owner', 'age',
-            'image', 'image_url'
-            )
+            'id', 'name', 'color', 'birth_year', 'achievements', 'owner',
+            'age', 'image', 'image_url'
+        )
         read_only_fields = ('owner',)
 
     def get_image_url(self, obj):
         if obj.image:
             return obj.image.url
         return None
-    
+
     def get_age(self, obj):
         return dt.datetime.now().year - obj.birth_year
-    
+
     def create(self, validated_data):
         if 'achievements' not in self.initial_data:
             cat = Cat.objects.create(**validated_data)
@@ -71,14 +75,14 @@ class CatSerializer(serializers.ModelSerializer):
             achievements = validated_data.pop('achievements')
             cat = Cat.objects.create(**validated_data)
             for achievement in achievements:
-                current_achievement, status = Achievement.objects.get_or_create(
+                current_achievement, _ = Achievement.objects.get_or_create(
                     **achievement
-                    )
+                )
                 AchievementCat.objects.create(
                     achievement=current_achievement, cat=cat
-                    )
+                )
             return cat
-    
+
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
         instance.color = validated_data.get('color', instance.color)
@@ -90,9 +94,9 @@ class CatSerializer(serializers.ModelSerializer):
             achievements_data = validated_data.pop('achievements')
             lst = []
             for achievement in achievements_data:
-                current_achievement, status = Achievement.objects.get_or_create(
+                current_achievement, _ = Achievement.objects.get_or_create(
                     **achievement
-                    )
+                )
                 lst.append(current_achievement)
             instance.achievements.set(lst)
 
