@@ -1,0 +1,5 @@
+IP: 51.250.74.45;
+name_taski: https://procom.sytes.net;
+name_kittygram: https://procoms.sytes.net;
+login: ubuntu;
+password: 123456789;

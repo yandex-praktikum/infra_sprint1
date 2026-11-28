@@ -46,10 +46,7 @@ class CatSerializer(serializers.ModelSerializer):
     color = Hex2NameColor()
     age = serializers.SerializerMethodField()
     image = Base64ImageField(required=False, allow_null=True)
-    image_url = serializers.SerializerMethodField(
-        'get_image_url',
-        read_only=True
-    )
+    image_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Cat

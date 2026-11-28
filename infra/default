@@ -1,0 +1,92 @@
+server {
+    server_name procom.sytes.net 51.250.74.45;
+
+    # Новый блок.
+    location /api/ {
+        # Эта команда определяет, куда нужно перенаправить запрос.
+        proxy_pass http://127.0.0.1:8000;
+    }
+
+    # Новый блок.
+    location /admin/ {
+        proxy_pass http://127.0.0.1:8000;
+    }    
+
+    location / {
+        root   /var/www/taski;
+        index  index.html index.htm;
+        try_files $uri /index.html;
+    }
+
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/procom.sytes.net/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/procom.sytes.net/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+server {
+    if ($host = procom.sytes.net) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+
+    listen 80;
+    server_name procom.sytes.net 51.250.74.45;
+    return 404; # managed by Certbot
+
+
+}
+
+server {
+    server_name procoms.sytes.net 51.250.74.45;
+
+    client_max_body_size 20M;    
+
+    # Новый блок.
+    location /api/ {
+        # Эта команда определяет, куда нужно перенаправить запрос.
+        client_max_body_size 20M;
+        proxy_pass http://127.0.0.1:8080;
+    }
+
+    # Новый блок.
+    location /admin/ {
+        client_max_body_size 20M;
+        proxy_pass http://127.0.0.1:8080;
+    }
+
+    location /media/ {
+        alias /var/www/kittygram/media/;
+    }
+
+    location / {
+        root /var/www/kittygram;
+        index index.html;
+        try_files $uri $uri/ /index.html;
+    }
+
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/procoms.sytes.net/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/procoms.sytes.net/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+
+
+server {
+    if ($host = procoms.sytes.net) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    server_name procoms.sytes.net 51.250.74.45;
+    listen 80;
+    return 404; # managed by Certbot
+
+
+}
